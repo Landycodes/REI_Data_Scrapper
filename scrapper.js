@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 
-const loadPage = async (search) => {
+const getDataFor = async (search) => {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto("https://www.bestplaces.net/");
@@ -11,6 +11,7 @@ const loadPage = async (search) => {
     page.click("#btnSearch"),
   ]);
 
+  //query selectors drills into page via css selectors and grabs data in the text
   const data = await page.evaluate(() => {
     const rowData = document.querySelector(".row:nth-child(5)");
     const boxData = rowData.querySelectorAll("div > p");
@@ -35,12 +36,17 @@ const loadPage = async (search) => {
     return dataObj;
   });
 
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+    page.click(".list-group > li:nth-child(17) > a"),
+  ]);
+
   await browser.close();
 
   console.log(data);
 };
 
-loadPage("tucson az");
+getDataFor("tucson az");
 
 // const test = document.querySelector('.row:nth-child(5)');
 // const test2 = test.querySelectorAll('div > p');
