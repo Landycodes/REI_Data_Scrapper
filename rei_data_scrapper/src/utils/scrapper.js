@@ -1,6 +1,11 @@
-const puppeteer = require("puppeteer");
+// const puppeteer = require("puppeteer");
+import puppeteer from "puppeteer";
 
 const getDataFor = async (search) => {
+  // const dataObj = {
+  //   Location: search,
+  // };
+
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto("https://www.bestplaces.net/");
@@ -19,31 +24,61 @@ const getDataFor = async (search) => {
     const popGrowth = boxData[2].innerText;
     const unEmploy = boxData[4].innerText;
     const MHV = boxData[6].innerText;
-    const array = [];
-    array.push("done");
-    array.push(population);
-    dataObj = {
+
+    const dataObj = {
       Population: population,
       PopulationGrowth: popGrowth,
       MedianHouseValue: MHV,
-      MHV_Growth: "_#4",
-      ThreeBedRent: "_#5",
-      VacancyRate: "_#6",
-      PercentOfRenters: "_#7",
       Unemployment: unEmploy,
     };
 
     return dataObj;
   });
 
+  //click home stats page and wait for content to load
   await Promise.all([
     page.waitForNavigation({ waitUntil: "domcontentloaded" }),
     page.click(".list-group > li:nth-child(17) > a"),
   ]);
 
+  const homeData = await page.evaluate(() => {
+    const tableData = document.querySelector(
+      ".table-responsive > table > tbody"
+    );
+
+    const houseGrowth = tableData.querySelector(
+      "tr:nth-child(5) > td:nth-child(2)"
+    ).innerText;
+
+    const VacancyRate = tableData.querySelector(
+      "tr:nth-child(14) > td:nth-child(2)"
+    ).innerText;
+
+    const dataObj = {
+      MHV_Growth: houseGrowth,
+      ThreeBedRent: "",
+      VacancyRate: VacancyRate,
+      PercentOfRenters: "",
+    };
+
+    return dataObj;
+  });
+
   await browser.close();
 
-  console.log(data);
+  const reiData = {
+    Location: search,
+    Population: data.Population,
+    PopulationGrowth: data.PopulationGrowth,
+    MedianHouseValue: data.MedianHouseValue,
+    MHV_Growth: homeData.MHV_Growth,
+    ThreeBedRent: homeData.ThreeBedRent,
+    VacancyRate: homeData.VacancyRate,
+    PercentOfRenters: homeData.PercentOfRenters,
+    Unemployment: data.Unemployment,
+  };
+
+  console.log(reiData);
 };
 
 getDataFor("tucson az");
@@ -53,3 +88,5 @@ getDataFor("tucson az");
 // const test3 = test2[1].innerText;
 // console.log(test3)
 //  538,167
+
+//percent of renters = h6.mt-3.mb-0 neighbor
