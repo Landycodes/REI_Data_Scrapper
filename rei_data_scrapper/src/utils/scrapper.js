@@ -2,15 +2,13 @@
 import puppeteer from "puppeteer";
 
 const getDataFor = async (search) => {
-  // const dataObj = {
-  //   Location: search,
-  // };
-
+  //launches puppeteer opens bestplaces.net and enters search input
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto("https://www.bestplaces.net/");
   await page.type("#txtSearch", search);
 
+  //clicks the search button and waits for content to load
   await Promise.all([
     page.waitForNavigation({ waitUntil: "domcontentloaded" }),
     page.click("#btnSearch"),
@@ -25,6 +23,7 @@ const getDataFor = async (search) => {
     const unEmploy = boxData[4].innerText;
     const MHV = boxData[6].innerText;
 
+    //all data collected from this page added to object
     const dataObj = {
       Population: population,
       PopulationGrowth: popGrowth,
@@ -41,6 +40,7 @@ const getDataFor = async (search) => {
     page.click(".list-group > li:nth-child(17) > a"),
   ]);
 
+  //reads content on home stats page and returns data for object
   const homeData = await page.evaluate(() => {
     const tableData = document.querySelector(
       ".table-responsive > table > tbody"
@@ -50,15 +50,24 @@ const getDataFor = async (search) => {
       "tr:nth-child(5) > td:nth-child(2)"
     ).innerText;
 
+    const threeBedAv = document.querySelector(
+      "g:nth-child(2) > text > tspan"
+    ).textContent;
+
     const VacancyRate = tableData.querySelector(
       "tr:nth-child(14) > td:nth-child(2)"
     ).innerText;
 
+    const renterPop = document
+      .querySelector("h6.mt-3.mb-0")
+      .nextSibling.textContent.replace(/[^0-9.%]/g, "")
+      .trim();
+
     const dataObj = {
       MHV_Growth: houseGrowth,
-      ThreeBedRent: "",
+      ThreeBedRent: threeBedAv,
       VacancyRate: VacancyRate,
-      PercentOfRenters: "",
+      PercentOfRenters: renterPop,
     };
 
     return dataObj;
@@ -78,15 +87,7 @@ const getDataFor = async (search) => {
     Unemployment: data.Unemployment,
   };
 
-  console.log(reiData);
+  return reiData;
 };
 
-getDataFor("tucson az");
-
-// const test = document.querySelector('.row:nth-child(5)');
-// const test2 = test.querySelectorAll('div > p');
-// const test3 = test2[1].innerText;
-// console.log(test3)
-//  538,167
-
-//percent of renters = h6.mt-3.mb-0 neighbor
+getDataFor("tucson az").then((data) => console.log(data));
