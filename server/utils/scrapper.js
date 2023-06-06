@@ -1,5 +1,5 @@
-// const puppeteer = require("puppeteer");
-import puppeteer from "puppeteer";
+const puppeteer = require("puppeteer");
+// import puppeteer from "puppeteer";
 
 const getDataFor = async (search) => {
   //launches puppeteer opens bestplaces.net and enters search input
@@ -90,4 +90,8 @@ const getDataFor = async (search) => {
   return reiData;
 };
 
-getDataFor("tucson az").then((data) => console.log(data));
+// export default getDataFor;
+module.exports = getDataFor;
+
+//call function to test scrapper
+// getDataFor("tucson az").then((data) => console.log(data));
