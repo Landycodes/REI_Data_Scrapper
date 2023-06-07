@@ -1,11 +1,15 @@
 {
-    "version": 2,
+    "outputDirectory": "client/build",
     "builds": [
-      { "src": "client/package.json", "use": "@vercel/static-build" }
+        {
+            "src": "server.js",
+            "use": "@vercel/node"
+        }
     ],
     "routes": [
-      { "src": "/api/.*", "dest": "server.js" },
-      { "src": "/(.*)", "dest": "client/build/$1" }
-    ],
-    "functions": { "api/**/*.js" }
+      {
+        "src": "/(.*)",
+        "dest": "server/server.js"
+      }
+    ]
   }
