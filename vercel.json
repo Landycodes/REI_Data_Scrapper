@@ -1,7 +1,4 @@
 {
-    "rewrites": [
-      { "source": "/api/(.*)", "destination": "/server/server.js" },
-      { "source": "/(.*)", "destination": "/client/build/$1" }
-    ]
+"outputDirectory": "client/build"
   }
   
