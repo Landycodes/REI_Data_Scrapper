@@ -1,4 +1,14 @@
 {
-"outputDirectory": "client/build"
+"outputDirectory": "client/build",
+
+    "version": 2,
+    "builds": [
+      { "src": "server.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "server.js" },
+      { "src": "/(.*)", "dest": "/index.html" }
+    ]
+  
   }
   
