@@ -1,6 +1,5 @@
 {
     "version": 2,
-    "outputDirectory": "build/client",
     "builds": [
       { "src": "client/package.json", "use": "@vercel/static-build"},
       { "src": "server/*", "use": "@vercel/node" }
