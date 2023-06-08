@@ -1,6 +1,12 @@
 {
     "version": 2,
-    "outputDirectory": "client/build",
-    "rewrites": [{"source": "/api/(.*)", "destination": "/server/server.js"}]
-}
+    "builds": [
+      { "src": "client/*", "use": "@vercel/static" },
+      { "src": "server/*", "use": "@vercel/node" }
+    ],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "server/server.js" },
+      { "src": "/(.*)", "dest": "client/build/$1" }
+    ]
+  }
   
