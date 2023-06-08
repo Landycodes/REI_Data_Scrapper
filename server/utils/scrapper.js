@@ -1,4 +1,5 @@
-let Chromium = require("chrome-aws-lambda");
+// const Chromium = require("@sparticuz/chromium");
+const puppeteer = require("puppeteer");
 
 //////////////SCRAPPER NOT RUNNING ON DEPLOYMENT
 /////////////////////VERCEL RUNNING SERVER BUT CANT FIND HTML PAGE
@@ -7,19 +8,20 @@ const getDataFor = async (search) => {
 
   try {
     //launches puppeteer opens bestplaces.net and enters search input
-    browser = await Chromium.puppeteer.launch({
-      args: [
-        ...Chromium.args,
-        "--hide-scrollbars",
-        "--disable-web-security",
-        "--no-sandbox",
-      ],
-      ignoreDefaultArgs: ["--disable-extensions"],
-      defaultViewport: Chromium.defaultViewport,
-      executablePath: await Chromium.executablePath,
-      headless: true,
-      ignoreHTTPSErrors: true,
-    });
+    // browser = await puppeteer.launch({
+    //   args: [
+    //     ...Chromium.args,
+    //     "--hide-scrollbars",
+    //     "--disable-web-security",
+    //     "--no-sandbox",
+    //   ],
+    //   ignoreDefaultArgs: ["--disable-extensions"],
+    //   defaultViewport: Chromium.defaultViewport,
+    //   executablePath: await Chromium.executablePath(),
+    //   headless: "new",
+    //   ignoreHTTPSErrors: true,
+    // });
+    browser = await puppeteer.launch({ headless: "new" });
 
     const page = await browser.newPage();
     await page.goto("https://www.bestplaces.net/");
@@ -127,4 +129,4 @@ const getDataFor = async (search) => {
 module.exports = getDataFor;
 
 //call function to test scrapper
-// getDataFor("tucson az").then((data) => console.log(data));
+getDataFor("tucson az").then((data) => console.log(data));
