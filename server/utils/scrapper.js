@@ -9,7 +9,7 @@ const getDataFor = async (search) => {
       args: [...Chromium.args, "--hide-scrollbars", "--disable-web-security"],
       defaultViewport: Chromium.defaultViewport,
       executablePath: await Chromium.executablePath, //AAWWWWWWWAWWWWAWWAW
-      headless: false,
+      headless: true,
       ignoreHTTPSErrors: true,
     });
 
