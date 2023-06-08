@@ -112,7 +112,6 @@ const getDataFor = async (search) => {
     }
   } catch (err) {
     res.status(400).json(err);
-    return;
   }
 };
 
