@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const { scrapData } = require("../../controllers/scrapcontroller");
+const { scrapData, testServer } = require("../../controllers/scrapcontroller");
 
-router.route("/").post(scrapData);
+router.route("/").get(testServer).post(scrapData);
 
 module.exports = router;

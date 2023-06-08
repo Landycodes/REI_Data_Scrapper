@@ -10,4 +10,7 @@ module.exports = {
 
     return res.json(data);
   },
+  async testServer(req, res) {
+    res.send("server is up and running :)");
+  },
 };
