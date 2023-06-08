@@ -1,5 +1,4 @@
-const Chromium = require("@sparticuz/chromium-min");
-const puppeteer = require("puppeteer-core");
+const puppeteer = require("puppeteer");
 
 //////////////SCRAPPER NOT RUNNING ON DEPLOYMENT
 /////////////////////VERCEL RUNNING SERVER BUT CANT FIND HTML PAGE
@@ -8,19 +7,7 @@ const getDataFor = async (search) => {
 
   try {
     //launches puppeteer opens bestplaces.net and enters search input
-    browser = await puppeteer.launch({
-      args: [
-        ...Chromium.args,
-        "--hide-scrollbars",
-        "--disable-web-security",
-        "--no-sandbox",
-      ],
-      ignoreDefaultArgs: ["--disable-extensions"],
-      defaultViewport: Chromium.defaultViewport,
-      executablePath: await Chromium.executablePath(),
-      headless: "new",
-      ignoreHTTPSErrors: true,
-    });
+    browser = await puppeteer.launch({ headless: "new" });
 
     const page = await browser.newPage();
     await page.goto("https://www.bestplaces.net/");
