@@ -1,5 +1,5 @@
-// const Chromium = require("@sparticuz/chromium");
-const puppeteer = require("puppeteer");
+const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
 
 //////////////SCRAPPER NOT RUNNING ON DEPLOYMENT
 /////////////////////VERCEL RUNNING SERVER BUT CANT FIND HTML PAGE
@@ -21,7 +21,13 @@ const getDataFor = async (search) => {
     //   headless: "new",
     //   ignoreHTTPSErrors: true,
     // });
-    browser = await puppeteer.launch({ headless: "new" });
+    const executablePath = await chromium.executablePath;
+
+    browser = await puppeteer.launch({
+      executablePath,
+      args: chromium.args,
+      headless: chromium.headless,
+    });
 
     const page = await browser.newPage();
     await page.goto("https://www.bestplaces.net/");
