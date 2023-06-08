@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:3001",
-  "homepage": "https://rei-data-scrapper-l9ff633d3-landycodes.vercel.app/",
   "dependencies": {
     "bootstrap": "^5.3.0",
     "react": "^18.2.0",
