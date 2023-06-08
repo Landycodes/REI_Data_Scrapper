@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+require("dotenv").config();
 
 //////////////SCRAPPER NOT RUNNING ON DEPLOYMENT
 /////////////////////VERCEL RUNNING SERVER BUT CANT FIND HTML PAGE
@@ -7,7 +8,19 @@ const getDataFor = async (search) => {
 
   try {
     //launches puppeteer opens bestplaces.net and enters search input
-    browser = await puppeteer.launch({ headless: "new" });
+    browser = await puppeteer.launch({
+      headless: "new",
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+      args: [
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+    });
 
     const page = await browser.newPage();
     await page.goto("https://www.bestplaces.net/");
