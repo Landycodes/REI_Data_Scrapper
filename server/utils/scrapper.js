@@ -1,5 +1,7 @@
 let Chromium = require("chrome-aws-lambda");
 
+//////////////SCRAPPER NOT RUNNING ON DEPLOYMENT
+/////////////////////VERCEL RUNNING SERVER BUT CANT FIND HTML PAGE
 const getDataFor = async (search) => {
   let browser = null;
 
@@ -8,7 +10,7 @@ const getDataFor = async (search) => {
     browser = await Chromium.puppeteer.launch({
       args: [...Chromium.args, "--hide-scrollbars", "--disable-web-security"],
       defaultViewport: Chromium.defaultViewport,
-      executablePath: await Chromium.executablePath, //AAWWWWWWWAWWWWAWWAW
+      executablePath: await Chromium.executablePath,
       headless: true,
       ignoreHTTPSErrors: true,
     });
