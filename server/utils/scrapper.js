@@ -1,4 +1,4 @@
-const chromium = require("chrome-aws-lambda");
+const Chromium = require("@sparticuz/chromium");
 const puppeteer = require("puppeteer-core");
 
 //////////////SCRAPPER NOT RUNNING ON DEPLOYMENT
@@ -8,25 +8,18 @@ const getDataFor = async (search) => {
 
   try {
     //launches puppeteer opens bestplaces.net and enters search input
-    // browser = await puppeteer.launch({
-    //   args: [
-    //     ...Chromium.args,
-    //     "--hide-scrollbars",
-    //     "--disable-web-security",
-    //     "--no-sandbox",
-    //   ],
-    //   ignoreDefaultArgs: ["--disable-extensions"],
-    //   defaultViewport: Chromium.defaultViewport,
-    //   executablePath: await Chromium.executablePath(),
-    //   headless: "new",
-    //   ignoreHTTPSErrors: true,
-    // });
-    const executablePath = await chromium.executablePath;
-
     browser = await puppeteer.launch({
-      executablePath,
-      args: chromium.args,
-      headless: chromium.headless,
+      args: [
+        ...Chromium.args,
+        "--hide-scrollbars",
+        "--disable-web-security",
+        "--no-sandbox",
+      ],
+      ignoreDefaultArgs: ["--disable-extensions"],
+      defaultViewport: Chromium.defaultViewport,
+      executablePath: await Chromium.executablePath(),
+      headless: "new",
+      ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
