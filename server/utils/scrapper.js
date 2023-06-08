@@ -111,9 +111,7 @@ const getDataFor = async (search) => {
       return reiData;
     }
   } catch (err) {
-    return {
-      Error: err,
-    };
+    return err;
   }
 };
 
