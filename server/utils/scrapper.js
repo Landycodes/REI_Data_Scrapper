@@ -8,10 +8,16 @@ const getDataFor = async (search) => {
   try {
     //launches puppeteer opens bestplaces.net and enters search input
     browser = await Chromium.puppeteer.launch({
-      args: [...Chromium.args, "--hide-scrollbars", "--disable-web-security"],
+      args: [
+        ...Chromium.args,
+        "--hide-scrollbars",
+        "--disable-web-security",
+        "--no-sandbox",
+      ],
+      ignoreDefaultArgs: ["--disable-extensions"],
       defaultViewport: Chromium.defaultViewport,
       executablePath: await Chromium.executablePath,
-      headless: "new",
+      headless: true,
       ignoreHTTPSErrors: true,
     });
 
