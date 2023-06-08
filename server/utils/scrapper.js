@@ -11,7 +11,7 @@ const getDataFor = async (search) => {
       args: [...Chromium.args, "--hide-scrollbars", "--disable-web-security"],
       defaultViewport: Chromium.defaultViewport,
       executablePath: await Chromium.executablePath,
-      headless: true,
+      headless: "new",
       ignoreHTTPSErrors: true,
     });
 
@@ -113,7 +113,7 @@ const getDataFor = async (search) => {
       return reiData;
     }
   } catch (err) {
-    res.status(400).json(err);
+    console.error(err);
   }
 };
 
