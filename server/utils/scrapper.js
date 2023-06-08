@@ -1,4 +1,4 @@
-const Chromium = require("@sparticuz/chromium");
+const Chromium = require("@sparticuz/chromium-min");
 const puppeteer = require("puppeteer-core");
 
 //////////////SCRAPPER NOT RUNNING ON DEPLOYMENT
