@@ -10,7 +10,7 @@ const getDataFor = async (search) => {
       : puppeteer.executablePath();
   //launches puppeteer opens bestplaces.net and enters search input
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: "new",
     executablePath,
     args: [
       "--disable-setuid-sandbox",
