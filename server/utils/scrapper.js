@@ -35,11 +35,13 @@ const getDataFor = async (search) => {
     await page.type("#txtSearch", search);
 
     //clicks the search button and waits for content to load
+    console.log("clicking enter......");
     await Promise.all([
       page.waitForNavigation({ waitUntil: "domcontentloaded" }),
       page.click("#btnSearch"),
     ]);
 
+    console.log("checking for page title......");
     const titleElement = await page.$("p.card-title.text-center");
     if (!titleElement) {
       browser.close();
@@ -49,6 +51,7 @@ const getDataFor = async (search) => {
       };
     } else {
       //query selectors drills into page via css selectors and grabs data in the text
+      console.log("scanning first page......");
       const data = await page.evaluate(() => {
         const title = document.querySelector(
           "p.card-title.text-center"
@@ -69,16 +72,19 @@ const getDataFor = async (search) => {
           Unemployment: unEmploy,
         };
 
+        console.log("data retrieved!");
         return dataObj;
       });
 
       //click home stats page and wait for content to load
+      console.log("clicking homeStats page....");
       await Promise.all([
         page.waitForNavigation({ waitUntil: "domcontentloaded" }),
         page.click(".list-group > li:nth-child(17) > a"),
       ]);
 
       //reads content on home stats page and returns data for object
+      console.log("scanning homeStats page......");
       const homeData = await page.evaluate(() => {
         const tableData = document.querySelector(
           ".table-responsive > table > tbody"
@@ -108,10 +114,9 @@ const getDataFor = async (search) => {
           PercentOfRenters: renterPop,
         };
 
+        console.log("data retrieved!");
         return dataObj;
       });
-
-      // await browser.close();
 
       const reiData = {
         Location: data.Location,
@@ -125,11 +130,13 @@ const getDataFor = async (search) => {
         Unemployment: data.Unemployment,
       };
 
+      console.log("object created!");
       return reiData;
     }
   } catch (err) {
     console.error("Something fucked up :/", err);
   } finally {
+    console.log("closing browser......");
     await browser.close();
   }
 };
