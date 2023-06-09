@@ -4,26 +4,28 @@ require("dotenv").config();
 //////////////SCRAPPER NOT RUNNING ON DEPLOYMENT
 /////////////////////VERCEL RUNNING SERVER BUT CANT FIND HTML PAGE
 const getDataFor = async (search) => {
-  let browser = null;
+  const executablePath =
+    process.env.NODE_ENV === "production"
+      ? process.env.PUPPETEER_EXECUTABLE_PATH
+      : puppeteer.executablePath();
+  //launches puppeteer opens bestplaces.net and enters search input
+  const browser = await puppeteer.launch({
+    headless: "new",
+    executablePath,
+    args: [
+      "--disable-setuid-sandbox",
+      "--no-sandbox",
+      "--single-process",
+      "--no-zygote",
+    ],
+  });
 
   try {
-    //launches puppeteer opens bestplaces.net and enters search input
-    browser = await puppeteer.launch({
-      headless: "new",
-      executablePath:
-        process.env.NODE_ENV === "production"
-          ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
-      args: [
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-        "--single-process",
-        "--no-zygote",
-      ],
-    });
-
     const page = await browser.newPage();
-    await page.goto("https://www.bestplaces.net/");
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+      page.goto("https://www.bestplaces.net/"),
+    ]);
     await page.type("#txtSearch", search);
 
     //clicks the search button and waits for content to load
@@ -128,4 +130,4 @@ const getDataFor = async (search) => {
 module.exports = getDataFor;
 
 //call function to test scrapper
-// getDataFor("tucson az").then((data) => console.log(data));
+getDataFor("tucson az").then((data) => console.log(data));
