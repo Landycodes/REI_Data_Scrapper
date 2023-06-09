@@ -8,7 +8,8 @@ const getDataFor = async (search) => {
     process.env.NODE_ENV === "production"
       ? process.env.PUPPETEER_EXECUTABLE_PATH
       : puppeteer.executablePath();
-  //launches puppeteer opens bestplaces.net and enters search input
+
+  //launches puppeteer
   const browser = await puppeteer.launch({
     headless: "new",
     executablePath,
@@ -18,7 +19,9 @@ const getDataFor = async (search) => {
       "--single-process",
       "--no-zygote",
     ],
+    ignoreHTTPSErrors: true,
   });
+  console.log(executablePath);
 
   try {
     const page = await browser.newPage();
