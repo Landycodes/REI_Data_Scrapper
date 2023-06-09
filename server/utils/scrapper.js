@@ -80,6 +80,7 @@ const getDataFor = async (search) => {
       console.log("clicking homeStats page....");
       await Promise.all([
         page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+        page.waitForSelector(".list-group > li:nth-child(17) > a"),
         page.click(".list-group > li:nth-child(17) > a"),
       ]);
 
