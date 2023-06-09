@@ -10,7 +10,7 @@ const getDataFor = async (search) => {
       : puppeteer.executablePath();
   //launches puppeteer opens bestplaces.net and enters search input
   const browser = await puppeteer.launch({
-    headless: "new",
+    headless: false,
     executablePath,
     args: [
       "--disable-setuid-sandbox",
@@ -25,6 +25,7 @@ const getDataFor = async (search) => {
     await Promise.all([
       page.waitForNavigation({ waitUntil: "networkidle0" }),
       page.goto("https://www.bestplaces.net/"),
+      page.waitForSelector("#txtSearch"),
     ]);
     await page.type("#txtSearch", search);
 
@@ -130,4 +131,4 @@ const getDataFor = async (search) => {
 module.exports = getDataFor;
 
 //call function to test scrapper
-// getDataFor("tucson az").then((data) => console.log(data));
+getDataFor("tucson az").then((data) => console.log(data));
