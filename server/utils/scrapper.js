@@ -23,7 +23,7 @@ const getDataFor = async (search) => {
   try {
     const page = await browser.newPage();
     await Promise.all([
-      page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+      page.waitForNavigation({ waitUntil: "networkidle0" }),
       page.goto("https://www.bestplaces.net/"),
     ]);
     await page.type("#txtSearch", search);
