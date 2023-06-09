@@ -136,4 +136,4 @@ const getDataFor = async (search) => {
 module.exports = getDataFor;
 
 //call function to test scrapper
-// getDataFor("tucson az").then((data) => console.log(data));
+getDataFor("tucson az").then((data) => console.log(data));
