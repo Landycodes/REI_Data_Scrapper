@@ -106,7 +106,7 @@ const getDataFor = async (search) => {
         return dataObj;
       });
 
-      await browser.close();
+      // await browser.close();
 
       const reiData = {
         Location: data.Location,
@@ -123,7 +123,9 @@ const getDataFor = async (search) => {
       return reiData;
     }
   } catch (err) {
-    console.error(err);
+    console.error("Something fucked up :/", err);
+  } finally {
+    await browser.close();
   }
 };
 
@@ -131,4 +133,4 @@ const getDataFor = async (search) => {
 module.exports = getDataFor;
 
 //call function to test scrapper
-// getDataFor("tucson az").then((data) => console.log(data));
+getDataFor("tucson az").then((data) => console.log(data));
