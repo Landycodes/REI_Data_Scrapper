@@ -25,7 +25,6 @@ const getDataFor = async (search) => {
   try {
     console.log("Opening the browser......");
     const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(45000);
 
     await Promise.all([
       page.goto("https://www.bestplaces.net/"),
@@ -80,9 +79,9 @@ const getDataFor = async (search) => {
 
       //click home stats page and wait for content to load
       console.log("clicking homeStats page....");
+      await page.waitForSelector("ul.list-group > li:nth-child(17) > a");
       await Promise.all([
         page.waitForNavigation({ waitUntil: "networkidle0" }),
-        page.waitForSelector("ul.list-group > li:nth-child(17) > a"),
         page.click("ul.list-group > li:nth-child(17) > a"),
       ]);
       //reads content on home stats page and returns data for object
