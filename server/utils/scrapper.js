@@ -11,7 +11,7 @@ const getDataFor = async (search) => {
 
   //launches puppeteer
   const browser = await puppeteer.launch({
-    headless: false, //true
+    headless: true, //true
     executablePath,
     args: [
       "--disable-setuid-sandbox",
@@ -145,4 +145,4 @@ const getDataFor = async (search) => {
 module.exports = getDataFor;
 
 //call function to test scrapper
-getDataFor("tucson az").then((data) => console.log(data));
+// getDataFor("tucson az").then((data) => console.log(data));
