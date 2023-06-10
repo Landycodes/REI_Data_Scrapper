@@ -79,7 +79,6 @@ const getDataFor = async (search) => {
 
       //click home stats page and wait for content to load
       console.log("clicking homeStats page....");
-      await page.waitForSelector(".list-group > li:nth-child(17) > a");
       await Promise.all([
         page.waitForNavigation({ waitUntil: "networkidle0" }),
         page.click(".list-group > li:nth-child(17) > a"),
