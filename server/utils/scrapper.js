@@ -79,10 +79,10 @@ const getDataFor = async (search) => {
 
       //click home stats page and wait for content to load
       console.log("clicking homeStats page....");
-      await page.waitForSelector("ul.list-group > li:nth-child(17) > a");
+      await page.waitForSelector(".list-group > li:nth-child(17) > a");
       await Promise.all([
         page.waitForNavigation({ waitUntil: "networkidle0" }),
-        page.click("ul.list-group > li:nth-child(17) > a"),
+        page.click(".list-group > li:nth-child(17) > a"),
       ]);
       //reads content on home stats page and returns data for object
       console.log("scanning homeStats page......");
