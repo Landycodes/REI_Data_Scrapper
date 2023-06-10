@@ -78,10 +78,16 @@ const getDataFor = async (search) => {
       });
 
       //click home stats page and wait for content to load
-      console.log("clicking homeStats page....");
+      console.log("navigating to housing page....");
+      const urlState = data.Location.split(",")[1].toLocaleLowerCase().trim();
+      const urlCity = data.Location.split(",")[0].toLocaleLowerCase().trim();
       await Promise.all([
         page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-        page.click(".list-group > li:nth-child(17) > a"),
+        page.goto(
+          `https://www.bestplaces.net/housing/city/${urlState}/${urlCity}`
+        ),
+
+        // page.click(".list-group > li:nth-child(17) > a"),
       ]);
       //reads content on home stats page and returns data for object
       console.log("scanning homeStats page......");

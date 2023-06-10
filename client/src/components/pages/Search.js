@@ -43,9 +43,10 @@ export default function Search() {
         onClick={() => {
           const search = document.querySelectorAll(".location");
           search.forEach(async (item) => {
-            await lookUp(item.value)
-              .then((data) => setData([...getData, data]))
-              .then(() => console.log(getData));
+            await lookUp(item.value).then((data) => {
+              setData([...getData, data]);
+              console.log(getData);
+            });
           });
           // lookUp(search).then((data) => setData(data));
         }}

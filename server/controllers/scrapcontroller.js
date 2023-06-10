@@ -11,6 +11,7 @@ module.exports = {
     return res.json(data);
   },
   async testServer(req, res) {
+    console.log("Server has been pinged");
     res.send("server is up and running :)");
   },
 };
