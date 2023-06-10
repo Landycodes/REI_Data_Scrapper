@@ -26,6 +26,21 @@ const getDataFor = async (search) => {
     console.log("Opening the browser......");
     const page = await browser.newPage();
 
+    await page.setRequestInterception(true);
+    page.on("request", (request) => {
+      if (
+        request.resourceType() === "image" ||
+        request.resourceType() === "stylesheet" ||
+        request.resourceType() === "font"
+      ) {
+        // Block requests for images, stylesheets, and fonts
+        request.abort();
+      } else {
+        // Allow all other requests
+        request.continue();
+      }
+    });
+
     await Promise.all([
       page.goto("https://www.bestplaces.net/"),
       page.waitForNavigation({ waitUntil: "networkidle0" }),
@@ -81,16 +96,19 @@ const getDataFor = async (search) => {
       console.log("navigating to housing page....");
       const urlState = data.Location.split(",")[1].toLocaleLowerCase().trim();
       const urlCity = data.Location.split(",")[0].toLocaleLowerCase().trim();
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-        page.goto(
-          `https://www.bestplaces.net/housing/city/${urlState}/${urlCity}`
-        ),
 
-        // page.click(".list-group > li:nth-child(17) > a"),
-      ]);
+      await page.click(".list-group > li:nth-child(17) > a");
+      await page.waitForSelector(".table-responsive > table > tbody");
+      await page.waitForSelector("h6.mt-3.mb-0");
+      // await Promise.all([
+      //   page.waitForNavigation({ waitUntil: "networkidle0" }),
+      //   // page.goto(
+      //   //   `https://www.bestplaces.net/housing/city/${urlState}/${urlCity}`
+      //   // ),
+      //   page.click(".list-group > li:nth-child(17) > a"),
+      // ]);
       //reads content on home stats page and returns data for object
-      console.log("scanning homeStats page......");
+      console.log("scanning housing page......");
       const homeData = await page.evaluate(() => {
         const tableData = document.querySelector(
           ".table-responsive > table > tbody"
