@@ -11,7 +11,7 @@ const getDataFor = async (search) => {
 
   //launches puppeteer
   const browser = await puppeteer.launch({
-    headless: true, //true
+    headless: false, //true
     executablePath,
     args: [
       "--disable-setuid-sandbox",
@@ -80,7 +80,7 @@ const getDataFor = async (search) => {
       //click home stats page and wait for content to load
       console.log("clicking homeStats page....");
       await Promise.all([
-        page.waitForNavigation({ waitUntil: "networkidle0" }),
+        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
         page.click(".list-group > li:nth-child(17) > a"),
       ]);
       //reads content on home stats page and returns data for object
@@ -145,4 +145,4 @@ const getDataFor = async (search) => {
 module.exports = getDataFor;
 
 //call function to test scrapper
-// getDataFor("tucson az").then((data) => console.log(data));
+getDataFor("tucson az").then((data) => console.log(data));
