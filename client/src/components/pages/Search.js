@@ -3,29 +3,57 @@ import "../style.css";
 import { lookUp } from "../../utils/API";
 
 export default function Search() {
-  const [getData, setData] = useState(false);
-  // lookUp("tucson az").then((data) => setData(data));
+  const [getData, setData] = useState([]);
+  const [inputs, addInput] = useState([]);
 
-  // getData ? console.log(getData.Location) : console.log("poop");
+  const handleInputs = () => {
+    addInput([
+      ...inputs,
+      <input
+        key={inputs.length}
+        className="location mb-3"
+        placeholder="Enter city and state"
+      />,
+    ]);
+  };
+
+  const handleSearch = async () => {
+    Promise.all(
+      inputs.map(async (item) => {
+        await lookUp(item).then((data) => setData([...getData, data]));
+      })
+    );
+  };
 
   return (
     <div className="d-flex flex-column align-items-center">
       <h1 className="mt-4">REI data Scrapper</h1>
-      <input id="location" placeholder="Enter city and state" />
-      <button className="btn btn-light w-25 mt-2 p-0">
+      <input className="location mb-3" placeholder="Enter city and state" />
+      {inputs.map((input) => input)}
+      <button
+        className="btn btn-light w-25 mt-2 p-0"
+        onClick={() => {
+          handleInputs();
+        }}
+      >
         <h4>+</h4>
       </button>
       <button
         className="w-50 mt-3"
         onClick={() => {
-          const search = document.querySelector("#location").value;
-          lookUp(search).then((data) => setData(data));
+          const search = document.querySelectorAll(".location");
+          search.forEach(async (item) => {
+            await lookUp(item.value)
+              .then((data) => setData([...getData, data]))
+              .then(() => console.log(getData));
+          });
+          // lookUp(search).then((data) => setData(data));
         }}
       >
         Search
       </button>
 
-      {getData ? (
+      {getData.length ? (
         getData.Location ? (
           <table className="table table-dark bg-dark mt-3 border border-white">
             <tbody className="p-2">
