@@ -12,3 +12,7 @@ export const lookUp = (inquiry) => {
     })
     .catch((err) => console.error(err));
 };
+
+export const pingServer = () => {
+  return fetch('api/scrap')
+}
