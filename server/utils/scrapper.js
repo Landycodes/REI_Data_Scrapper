@@ -28,16 +28,36 @@ const getDataFor = async (search) => {
 
     await page.setRequestInterception(true);
     page.on("request", (request) => {
+      const requestType = request.resourceType();
+      const contentType = request.headers()["content-type"];
+      const requestUrl = request.url().toLowerCase();
       if (
-        request.resourceType() === "image" ||
+        requestType === "image" ||
+        contentType?.startsWith("image/") ||
         request.resourceType() === "stylesheet" ||
-        request.resourceType() === "font"
+        request.resourceType() === "font" ||
+        requestUrl.includes("bootstrap") ||
+        requestUrl.includes("cs.js") ||
+        request.resourceType() === "iframe" ||
+        (requestType === "script" &&
+          !requestUrl.includes("highcharts") &&
+          !requestUrl.includes("jquery"))
       ) {
         // Block requests for images, stylesheets, and fonts
         request.abort();
       } else {
         // Allow all other requests
         request.continue();
+      }
+    });
+
+    // Intercept requests for all targets created by the browser
+    browser.on("targetcreated", async (target) => {
+      if (target.type() === "page") {
+        const page = await target.page();
+        if (page) {
+          await page.setRequestInterception(true);
+        }
       }
     });
 
@@ -94,19 +114,10 @@ const getDataFor = async (search) => {
 
       //click home stats page and wait for content to load
       console.log("navigating to housing page....");
-      const urlState = data.Location.split(",")[1].toLocaleLowerCase().trim();
-      const urlCity = data.Location.split(",")[0].toLocaleLowerCase().trim();
-
       await page.click(".list-group > li:nth-child(17) > a");
       await page.waitForSelector(".table-responsive > table > tbody");
       await page.waitForSelector("h6.mt-3.mb-0");
-      // await Promise.all([
-      //   page.waitForNavigation({ waitUntil: "networkidle0" }),
-      //   // page.goto(
-      //   //   `https://www.bestplaces.net/housing/city/${urlState}/${urlCity}`
-      //   // ),
-      //   page.click(".list-group > li:nth-child(17) > a"),
-      // ]);
+
       //reads content on home stats page and returns data for object
       console.log("scanning housing page......");
       const homeData = await page.evaluate(() => {
@@ -160,12 +171,11 @@ const getDataFor = async (search) => {
   } catch (err) {
     console.error("Something fucked up :/", err);
   } finally {
-    console.log("closing browser......");
-    await browser.close();
+    // console.log("closing browser......");
+    // await browser.close();
   }
 };
 
-// export default getDataFor;
 module.exports = getDataFor;
 
 //call function to test scrapper
