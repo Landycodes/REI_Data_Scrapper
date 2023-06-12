@@ -60,9 +60,21 @@ export default function Search() {
       <input className="location mb-3" placeholder="Enter city and state" />
       {inputs.map((input) => input)}
       <button
-        className="btn btn-light w-25 mt-2 p-0"
+        className="add btn btn-light w-25 mt-2 p-0"
         onClick={() => {
-          handleInputs();
+          if (inputs.length <= 3) {
+            handleInputs();
+          } else {
+            const warn = document.createElement("div");
+            warn.textContent = "We can only handle 5 searches at a time";
+            warn.style.display = "block";
+            const target = document.querySelector(".add");
+            target.parentNode.insertBefore(warn, target);
+            setTimeout(() => {
+              warn.style.display = "none";
+            }, 3000);
+            target.style.display = "none";
+          }
           console.log(getData);
         }}
       >
@@ -71,87 +83,56 @@ export default function Search() {
       <button
         type="button"
         className={`btn btn-light w-50 mt-3 ${loading ? "disabled" : ""}`}
-        onClick={() => {
+        onClick={async () => {
           const search = document.querySelectorAll(".location");
+          const searchArray = [];
+          search.forEach((item) => searchArray.push(item.value));
+          console.log(searchArray);
           setLoad(true);
-          search.forEach(async (item) => {
-            await lookUp(item.value)
-              .then((data) => {
-                console.log(data);
-                addObj(data);
-              })
-              .then(() => {
-                setLoad(false);
-                item.value = "";
-                addInput([]);
-              });
-          });
-          // lookUp(search).then((data) => setData(data));
+
+          lookUp(searchArray)
+            .then((data) => {
+              console.log(data);
+              addObj(data);
+            })
+            .finally(() => {
+              setLoad(false);
+              search.forEach((item) => (item.value = ""));
+              addInput([]);
+              const target = document.querySelector(".add");
+              target.style.display = "block";
+            });
+
+          //runs one at a time
+          // for (const item of search) {
+          //   try {
+          //     const data = await lookUp(item.value);
+          //     console.log(data);
+          //     addObj(data);
+          //   } catch (error) {
+          //     console.error(error);
+          //   }
+          // }
+
+          //runs all of them simultaneously
+          // search.forEach(async (item) => {
+          //   await lookUp(item.value)
+          //     .then((data) => {
+          //       console.log(data);
+          //       addObj(data);
+          //     })
+          //     .finally(() => {
+          //       setLoad(false);
+          //       item.value = "";
+          //       addInput([]);
+          //       const target = document.querySelector(".add");
+          //       target.style.display = "block";
+          //     });
+          // });
         }}
       >
         Search
       </button>
-
-      {/* {getData.length ? (
-        getData.Location ? (
-          <table className="table table-dark bg-dark mt-3 border border-white">
-            <tbody className="p-2">
-              <tr className="border border-white">
-                <th>{getData.Location}</th>
-              </tr>
-              <tr>
-                <td className="border border-white">House growth value </td>
-                <td className="border border-white">{getData.MHV_Growth}</td>
-              </tr>
-              <tr>
-                <td className="border border-white">House value </td>
-                <td className="border border-white">
-                  {getData.MedianHouseValue}
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-white">Percentage of renters </td>
-                <td className="border border-white">
-                  {getData.PercentOfRenters}
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-white">Population </td>
-                <td className="border border-white">{getData.Population}</td>
-              </tr>
-              <tr>
-                <td className="border border-white">Population growth </td>
-                <td className="border border-white">
-                  {getData.PopulationGrowth}
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-white">Average 3 bed cost </td>
-                <td className="border border-white">{getData.ThreeBedRent}</td>
-              </tr>
-              <tr>
-                <td className="border border-white">Unemployment rate </td>
-                <td className="border border-white">{getData.Unemployment}</td>
-              </tr>
-              <tr>
-                <td className="border border-white">Vacancy rate </td>
-                <td className="border border-white">{getData.VacancyRate}</td>
-              </tr>
-            </tbody>
-          </table>
-        ) : (
-          <table className="table table-dark bg-dark mt-3 border border-white">
-            <tbody>
-              <tr>
-                <th className="border border-white"> {getData.search}</th>
-                <th className="border border-white"> {getData.uhOh}</th>
-              </tr>
-            </tbody>
-          </table>
-        )
-      ) : (
-        ""
-      )} */}
 
       {getData.length
         ? getData.map((data, index) => {
