@@ -24,7 +24,7 @@ const getDataFor = async (search) => {
     console.log("Opening the browser......");
     const page = await browser.newPage();
 
-    //filtering http requests to only what is needed to collect data
+    // filtering http requests to only what is needed to collect data
     await page.setRequestInterception(true);
     page.on("request", (request) => {
       const requestType = request.resourceType();
@@ -81,95 +81,95 @@ const getDataFor = async (search) => {
       console.log("checking for page title......");
       const titleElement = await page.$("p.card-title.text-center");
       if (!titleElement) {
+        //click the first result that shows on the list
+        console.log("clicking first result......");
+        await Promise.all([
+          page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+          page.click("div.container > .row > .col-md-9 > p:nth-child(2) > a"),
+        ]);
         //grab elements on list an let user pick to run again with a fixed search
-        browser.close();
-        return {
-          search: search,
-          uhOh: "Search failed, try again",
-        };
-      } else {
-        //query selectors drills into page via css selectors and grabs data in the text
-        console.log("scanning first page......");
-        const data = await page.evaluate(() => {
-          const title = document.querySelector(
-            "p.card-title.text-center"
-          ).textContent;
-          const rowData = document.querySelector(".row:nth-child(5)");
-          const boxData = rowData.querySelectorAll("div > p");
-          const population = boxData[1].innerText;
-          const popGrowth = boxData[2].innerText;
-          const unEmploy = boxData[4].innerText;
-          const MHV = boxData[6].innerText;
-
-          //all data collected from this page added to object
-          const dataObj = {
-            Location: title,
-            Population: population,
-            PopulationGrowth: popGrowth,
-            MedianHouseValue: MHV,
-            Unemployment: unEmploy,
-          };
-
-          console.log("data retrieved!");
-          return dataObj;
-        });
-
-        //click home stats page and wait for content to load
-        console.log("navigating to housing page....");
-        await page.click(".list-group > li:nth-child(17) > a");
-        await page.waitForSelector(".table-responsive > table > tbody");
-        await page.waitForSelector("h6.mt-3.mb-0");
-
-        //reads content on home stats page and returns data for object
-        console.log("scanning housing page......");
-        const homeData = await page.evaluate(() => {
-          const tableData = document.querySelector(
-            ".table-responsive > table > tbody"
-          );
-
-          const houseGrowth = tableData.querySelector(
-            "tr:nth-child(5) > td:nth-child(2)"
-          ).innerText;
-
-          const threeBedAv = document.querySelector(
-            "g:nth-child(2) > text > tspan"
-          ).textContent;
-
-          const VacancyRate = tableData.querySelector(
-            "tr:nth-child(14) > td:nth-child(2)"
-          ).innerText;
-
-          const renterPop = document
-            .querySelector("h6.mt-3.mb-0")
-            .nextSibling.textContent.replace(/[^0-9.%]/g, "")
-            .trim();
-
-          const dataObj = {
-            MHV_Growth: houseGrowth,
-            ThreeBedRent: threeBedAv,
-            VacancyRate: VacancyRate,
-            PercentOfRenters: renterPop,
-          };
-
-          console.log("data retrieved!");
-          return dataObj;
-        });
-
-        const reiData = {
-          Location: data.Location,
-          Population: data.Population,
-          PopulationGrowth: data.PopulationGrowth,
-          MedianHouseValue: data.MedianHouseValue,
-          MHV_Growth: homeData.MHV_Growth,
-          ThreeBedRent: homeData.ThreeBedRent,
-          VacancyRate: homeData.VacancyRate,
-          PercentOfRenters: homeData.PercentOfRenters,
-          Unemployment: data.Unemployment,
-        };
-
-        console.log("object created!");
-        dataArray.push(reiData);
       }
+      //query selectors drills into page via css selectors and grabs data in the text
+      console.log("scanning first page......");
+      const data = await page.evaluate(() => {
+        const title = document.querySelector(
+          "p.card-title.text-center"
+        ).textContent;
+        const rowData = document.querySelector(".row:nth-child(5)");
+        const boxData = rowData.querySelectorAll("div > p");
+        const population = boxData[1].innerText;
+        const popGrowth = boxData[2].innerText;
+        const unEmploy = boxData[4].innerText;
+        const MHV = boxData[6].innerText;
+
+        //all data collected from this page added to object
+        const dataObj = {
+          Location: title,
+          Population: population,
+          PopulationGrowth: popGrowth,
+          MedianHouseValue: MHV,
+          Unemployment: unEmploy,
+        };
+
+        console.log("data retrieved!");
+        return dataObj;
+      });
+
+      //click home stats page and wait for content to load
+      console.log("navigating to housing page....");
+      await page.click(".list-group > li:nth-child(17) > a");
+      await page.waitForSelector(".table-responsive > table > tbody");
+      await page.waitForSelector("h6.mt-3.mb-0");
+
+      //reads content on home stats page and returns data for object
+      console.log("scanning housing page......");
+      const homeData = await page.evaluate(() => {
+        const tableData = document.querySelector(
+          ".table-responsive > table > tbody"
+        );
+
+        const houseGrowth = tableData.querySelector(
+          "tr:nth-child(5) > td:nth-child(2)"
+        ).innerText;
+
+        const threeBedAv = document.querySelector(
+          "g:nth-child(2) > text > tspan"
+        ).textContent;
+
+        const VacancyRate = tableData.querySelector(
+          "tr:nth-child(14) > td:nth-child(2)"
+        ).innerText;
+
+        const renterPop = document
+          .querySelector("h6.mt-3.mb-0")
+          .nextSibling.textContent.replace(/[^0-9.%]/g, "")
+          .trim();
+
+        const dataObj = {
+          MHV_Growth: houseGrowth,
+          ThreeBedRent: threeBedAv,
+          VacancyRate: VacancyRate,
+          PercentOfRenters: renterPop,
+        };
+
+        console.log("data retrieved!");
+        return dataObj;
+      });
+
+      const reiData = {
+        Location: data.Location,
+        Population: data.Population,
+        PopulationGrowth: data.PopulationGrowth,
+        MedianHouseValue: data.MedianHouseValue,
+        MHV_Growth: homeData.MHV_Growth,
+        ThreeBedRent: homeData.ThreeBedRent,
+        VacancyRate: homeData.VacancyRate,
+        PercentOfRenters: homeData.PercentOfRenters,
+        Unemployment: data.Unemployment,
+      };
+
+      console.log("object created!");
+      dataArray.push(reiData);
     }
     return dataArray;
   } catch (err) {
