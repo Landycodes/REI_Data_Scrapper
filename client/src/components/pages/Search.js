@@ -15,7 +15,9 @@ export default function Search() {
   const addObj = (object) => {
     const exists = getData.some((data) => data.Location === object.Location);
     if (!exists) {
-      setData((saved) => [...saved, ...object]);
+      if (object !== undefined) {
+        setData((saved) => [...saved, ...object]);
+      } else console.log(`Error recieved: ${object}`);
     }
   };
 
