@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "../style.css";
 import { lookUp, pingServer } from "../../utils/API";
 import Loading from "../loading";
@@ -49,41 +49,28 @@ export default function Search() {
     localStorage.setItem("tables", JSON.stringify(getData));
   };
 
-  const tableRef = useRef(null);
+  const copyTable = (index) => {
+    const table = document.querySelector(`table[data-key="${index}"]`);
+    if (!table) return;
 
-  const copyTable = () => {
-    const table = tableRef.current;
-    const range = document.createRange();
-    const sel = window.getSelection();
-    const rows = table.rows;
-    console.log(table);
-    console.log(rows);
+    // Extract table data
+    const location = table.querySelector("th").textContent;
+    const rows = table.querySelectorAll("tbody tr");
 
-    sel.removeAllRanges();
-
-    for (let i = 0; i < rows.length; i++) {
-      const cells = rows[i].cells;
-
-      for (let j = 0; j < cells.length; j++) {
-        const cell = cells[j];
-        console.log(cell);
-        // Check if the cell is part of the button column
-        if (!cell.classList.contains("ignoreCopy")) {
-          range.selectNodeContents(cell);
-          sel.addRange(range);
-        }
+    // Format the data
+    let copiedText = `${location}\n`;
+    rows.forEach((row) => {
+      if (!row.classList.contains("ignoreCopy")) {
+        const cells = row.querySelectorAll("td");
+        const [label, value] = Array.from(cells).map(
+          (cell) => cell.textContent
+        );
+        copiedText += `${label}\t${value}\n`;
       }
-    }
-
-    try {
-      const successful = document.execCommand("copy");
-      const message = successful ? "Table copied!" : "Unable to copy table.";
-      console.log(message);
-    } catch (err) {
-      console.error("Failed to copy table:", err);
-    }
-
-    sel.removeAllRanges();
+    });
+    console.log(copiedText);
+    // Copy the formatted data to clipboard
+    navigator.clipboard.writeText(copiedText);
   };
 
   return (
@@ -151,17 +138,17 @@ export default function Search() {
           ? getData.map((data, index) => {
               return data.Location ? (
                 <table
-                  ref={tableRef}
                   key={index}
+                  data-key={index}
                   className="table table-dark bg-dark mt-3 border border-white"
                 >
                   <tbody className="p-2">
-                    <tr className="border border-white">
+                    <tr className="border border-white ignoreCopy">
                       <th>{data.Location}</th>
-                      <th className="ignoreCopy">
+                      <th>
                         <button
                           className="btn btn-secondary btn-sm m-0 float-start"
-                          onClick={() => copyTable()}
+                          onClick={() => copyTable(index)}
                         >
                           Copy
                         </button>
@@ -202,6 +189,7 @@ export default function Search() {
                         Population growth{" "}
                       </td>
                       <td className="border border-white">
+                        <span className="invisible">'</span>
                         {data.PopulationGrowth}
                       </td>
                     </tr>
@@ -209,7 +197,7 @@ export default function Search() {
                       <td className="border border-white">
                         Average 3 bed cost{" "}
                       </td>
-                      <td className="border border-white">
+                      <td className="border border-white right-align">
                         {data.ThreeBedRent}
                       </td>
                     </tr>
