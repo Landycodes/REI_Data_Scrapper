@@ -6,6 +6,7 @@ export default function Loading() {
       <div style={{ height: "10%" }}></div>
       <h1>Gathering data....</h1>
       <h3>This may take a few minutes</h3>
+      <h4>Scanning .. out of .. pages</h4>
       <iframe
         title="homer"
         src="https://giphy.com/embed/3y0oCOkdKKRi0"

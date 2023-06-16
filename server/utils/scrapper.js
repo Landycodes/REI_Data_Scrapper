@@ -100,13 +100,15 @@ const getDataFor = async (search) => {
         const population = boxData[1].innerText;
         const popGrowth = boxData[2].innerText;
         const unEmploy = boxData[4].innerText;
-        const MHV = boxData[6].innerText;
+        const Income = boxData[6].innerText;
+        const MHV = boxData[8].innerText;
 
         //all data collected from this page added to object
         const dataObj = {
           Location: title,
           Population: population,
           PopulationGrowth: popGrowth,
+          AverageIncome: Income,
           MedianHouseValue: MHV,
           Unemployment: unEmploy,
         };
@@ -160,6 +162,7 @@ const getDataFor = async (search) => {
         Location: data.Location,
         Population: data.Population,
         PopulationGrowth: data.PopulationGrowth,
+        AverageIncome: data.AverageIncome,
         MedianHouseValue: data.MedianHouseValue,
         MHV_Growth: homeData.MHV_Growth,
         ThreeBedRent: homeData.ThreeBedRent,
