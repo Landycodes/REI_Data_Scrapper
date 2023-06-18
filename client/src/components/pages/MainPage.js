@@ -119,7 +119,10 @@ export default function MainPage() {
                   >
                     <td>{data.Location}</td>
                     <td>{data.Population}</td>
-                    <td>{data.PopulationGrowth}</td>
+                    <td>
+                      <span className="invisible">'</span>
+                      {data.PopulationGrowth}
+                    </td>
                     <td>{data.AverageIncome}</td>
                     <td>{data.MedianHouseValue}</td>
                     <td>{data.MHV_Growth}</td>
