@@ -3,7 +3,7 @@ import "../style.css";
 import { lookUp, pingServer } from "../../utils/API";
 import Loading from "../loading";
 
-export default function Search() {
+export default function MainPage() {
   const [getData, setData] = useState(
     localStorage.getItem("tables")
       ? JSON.parse(localStorage.getItem("tables"))
@@ -128,38 +128,40 @@ export default function Search() {
 
   return (
     <div className="d-flex flex-column align-items-center">
-      {loading ? <Loading /> : ""}
-      <h1 className="mt-4">REI data Scrapper</h1>
-      <br />
-      <input
-        className="location mb-3 rounded"
-        placeholder="Enter city and state"
-      />
-      {inputs.map((input) => input)}
-      <button
-        className="add btn btn-light w-25 mt-2 p-0"
-        onClick={() => addInputs()}
-      >
-        <h4>+</h4>
-      </button>
-      <button
-        type="button"
-        className={`btn btn-light w-50 mt-3 ${loading ? "disabled" : ""}`}
-        onClick={async () => handleQuery()}
-      >
-        Search
-      </button>
-      {getData.length ? (
-        <div className="mt-4 mb-3 w-100 d-flex justify-content-around">
-          <button className="btn btn-secondary">Copy All</button>
-          <button className="btn btn-danger" onClick={() => deleteAll()}>
-            Delete All
-          </button>
-        </div>
-      ) : (
-        ""
-      )}
-
+      {loading ? <Loading pages={inputs.length + 1} /> : ""}
+      <div className="d-flex flex-column align-items-center">
+        <h1 className="mt-4">REI data Scrapper</h1>
+        <br />
+        <input
+          className="location mb-3 rounded"
+          placeholder="Enter city and state"
+        />
+        {inputs.map((input) => input)}
+        <button
+          className="add btn btn-light w-25 mt-2 p-0"
+          onClick={() => addInputs()}
+        >
+          <h4>+</h4>
+        </button>
+        <button
+          type="button"
+          className={`btn btn-light w-50 mt-3 ${loading ? "disabled" : ""}`}
+          onClick={async () => handleQuery()}
+        >
+          Search
+        </button>
+        {getData.length ? (
+          <div className="mt-4 mb-3 w-100 d-flex justify-content-around">
+            <button className="btn btn-secondary">Copy All</button>
+            <button className="btn btn-danger" onClick={() => deleteAll()}>
+              Delete All
+            </button>
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
+      {/* vertical tables */}
       <div className="d-flex flex-column-reverse">
         {getData.length
           ? getData.map((data, index) => {
@@ -196,8 +198,12 @@ export default function Search() {
                       <td className="text-end">{data.MHV_Growth}</td>
                     </tr>
                     <tr>
-                      <td>Average Income </td>
+                      <td>Median home price</td>
                       <td className="text-end">{data.MedianHouseValue}</td>
+                    </tr>
+                    <tr>
+                      <td>Average Income </td>
+                      <td className="text-end">{data.AverageIncome}</td>
                     </tr>
                     <tr>
                       <td>Percentage of renters </td>

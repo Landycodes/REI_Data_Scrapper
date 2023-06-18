@@ -5,7 +5,7 @@ module.exports = {
     const data = await getDataFor(body.search);
 
     if (!data) {
-      res.status(400).json("something went wrong :(");
+      res.status(400).json("couldnt find your search :(");
     }
 
     return res.json(data);

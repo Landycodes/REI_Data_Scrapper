@@ -1,12 +1,12 @@
 import React from "react";
 
-export default function Loading() {
+export default function Loading(props) {
   return (
     <div className="loading w-100 h-100">
       <div style={{ height: "10%" }}></div>
       <h1>Gathering data....</h1>
       <h3>This may take a few minutes</h3>
-      <h4>Scanning .. out of .. pages</h4>
+      <h4>Scanning .. out of {props.pages} pages</h4>
       <iframe
         title="homer"
         src="https://giphy.com/embed/3y0oCOkdKKRi0"
