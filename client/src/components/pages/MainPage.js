@@ -11,6 +11,7 @@ export default function MainPage() {
   );
   const [inputs, setInput] = useState([]);
   const [loading, setLoad] = useState(false);
+  const [pageLoaded, setPages] = useState(0);
 
   //spin up server by making a GET request
   useEffect(() => {
@@ -32,6 +33,49 @@ export default function MainPage() {
     }
   };
 
+  const processData = async (body) => {
+    const reader = body.getReader();
+    const decoder = new TextDecoder();
+    let result = "";
+    let dataArray = [];
+
+    // Function to process each line of data
+    const processDataLine = (line) => {
+      const data = JSON.parse(line);
+      if (data.page) {
+        console.log(`Scanning page ${data.page}`);
+        setPages(data.page);
+      }
+      if (Array.isArray(data)) {
+        console.log("It's an array!");
+        dataArray.push(...data);
+      }
+    };
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        if (result.length > 0) {
+          processDataLine(result);
+        }
+        break;
+      }
+
+      result += decoder.decode(value);
+
+      const lines = result.split("\n");
+
+      for (let i = 0; i < lines.length - 1; i++) {
+        processDataLine(lines[i]);
+      }
+
+      result = lines[lines.length - 1];
+    }
+
+    return dataArray; // Return the final result
+  };
+
   //Sends an array of strings as a POST request to scrapper API
   const handleQuery = async () => {
     const data = document.querySelector("textarea").value;
@@ -48,7 +92,9 @@ export default function MainPage() {
 
     if (splitData.length) {
       setLoad(true);
+      console.log(splitData);
       lookUp(splitData)
+        .then(processData)
         .then((data) => {
           console.log(data);
           addObj(data);
@@ -56,8 +102,9 @@ export default function MainPage() {
         .finally(() => {
           setLoad(false);
           setInput([]);
+          setPages(0);
           document.querySelector("textarea").value = "";
-          console.log(getData);
+          // console.log(getData);
         });
     }
   };
@@ -67,9 +114,15 @@ export default function MainPage() {
     localStorage.clear();
   };
 
+  //deletes object by its index
+  const deleteOne = (index) => {
+    setData(getData.filter((item, i) => i !== index));
+    localStorage.setItem("tables", JSON.stringify(getData));
+  };
+
   return (
     <div className="d-flex flex-column align-items-center">
-      {loading ? <Loading pages={inputs.length} /> : ""}
+      {loading ? <Loading pageLoaded={pageLoaded} pages={inputs.length} /> : ""}
       <div className="d-flex flex-column align-items-center">
         <h1 className="mt-4">REI data Scrapper</h1>
         <br />
@@ -94,7 +147,7 @@ export default function MainPage() {
       </div>
       {getData.length ? (
         <div className="table-responsive">
-          <table className="table table-sm table-dark table-striped table-bordered bg-dark mt-3 border-white">
+          <table className="table table-sm table-dark table-striped table-bordered bg-dark mt-3 border-secondary">
             <thead className="thead-sm">
               <tr className="shrink p-0 m-0 text-center align-middle">
                 <th scope="col">City</th>
@@ -132,7 +185,19 @@ export default function MainPage() {
                     <td>{data.PercentOfRenters}</td>
                   </tr>
                 ) : (
-                  ""
+                  <tr key={index}>
+                    <td colSpan={"4"}>
+                      <b>{data.Error}</b> No results found, retype and try again
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-danger btn-sm m-0 float-end"
+                        onClick={() => deleteOne(index)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
                 );
               })}
             </tbody>

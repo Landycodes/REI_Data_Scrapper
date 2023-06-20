@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
-const getDataFor = async (search) => {
+const getDataFor = async (search, callback) => {
   const executablePath =
     process.env.NODE_ENV === "production"
       ? process.env.PUPPETEER_EXECUTABLE_PATH
@@ -61,7 +61,12 @@ const getDataFor = async (search) => {
     });
 
     const dataArray = [];
+    let pageLoaded = {};
     for (i = 0; i < search.length; i++) {
+      pageLoaded = { page: i + 1 };
+      callback(pageLoaded);
+
+      console.log(`scanning page ${[i + 1]} out of ${search.length}`);
       await Promise.all([
         page.goto("https://www.bestplaces.net/"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
@@ -80,7 +85,10 @@ const getDataFor = async (search) => {
 
       console.log("checking for page title......");
       const titleElement = await page.$("p.card-title.text-center");
-      if (!titleElement) {
+      const nextResult = await page.$(
+        "div.container > .row > .col-md-9 > p:nth-child(2) > a"
+      );
+      if (!titleElement && nextResult) {
         //click the first result that shows on the list
         console.log("clicking first result......");
         await Promise.all([
@@ -88,6 +96,11 @@ const getDataFor = async (search) => {
           page.click("div.container > .row > .col-md-9 > p:nth-child(2) > a"),
         ]);
         //grab elements on list an let user pick to run again with a fixed search
+      } else if (!titleElement && !nextResult) {
+        dataArray.push({
+          Error: search[i],
+        });
+        continue;
       }
       //query selectors drills into page via css selectors and grabs data in the text
       console.log("scanning first page......");
@@ -171,9 +184,10 @@ const getDataFor = async (search) => {
         Unemployment: data.Unemployment,
       };
 
-      console.log("object created!");
+      console.log(`page ${[i + 1]} scan successful`);
       dataArray.push(reiData);
     }
+    callback(null, dataArray);
     return dataArray;
   } catch (err) {
     console.error("Something fucked up :/", err);
@@ -187,3 +201,23 @@ module.exports = getDataFor;
 
 //call function to test scrapper
 // getDataFor(["tucson az", "dallas tx"]).then((data) => console.log(data));
+// const search = [
+//   "New York City New York",
+//   "Los Angeles California",
+//   "Chicago Illinois",
+//   "Houston Texas",
+//   "Phoenix Arizona",
+// ];
+// getDataFor(search, (result, dataArray) => {
+//   if (result) {
+//     console.log(result);
+//   } else {
+//     console.log(dataArray);
+//   }
+// });
+
+// New York City New York
+// Los Angeles California
+// Chicago Illinois
+// Houston Texas
+// Phoenix Arizona
