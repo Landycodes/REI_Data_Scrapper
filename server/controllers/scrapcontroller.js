@@ -5,6 +5,7 @@ module.exports = {
     res.setHeader("Content-Type", "application/json");
 
     const data = await getDataFor(body.search, (result, dataArray) => {
+      //returns page count as they are scanned and returns data object
       if (result) {
         res.write(JSON.stringify(result) + "\n");
       } else {

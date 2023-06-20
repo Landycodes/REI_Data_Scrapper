@@ -25,6 +25,7 @@ const getDataFor = async (search, callback) => {
     const page = await browser.newPage();
 
     // filtering http requests to only what is needed to collect data
+    //only requests what is needed to gather data
     await page.setRequestInterception(true);
     page.on("request", (request) => {
       const requestType = request.resourceType();

@@ -1,3 +1,5 @@
+/////////****ORIGINAL LAYOUT POSSIBLE MOBILE LAYOUT */
+
 import React, { useEffect, useState } from "react";
 import "../style.css";
 import { lookUp, pingServer } from "../../utils/API";

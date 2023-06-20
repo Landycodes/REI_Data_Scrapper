@@ -33,6 +33,7 @@ export default function MainPage() {
     }
   };
 
+  //takes API response and handles pages loaded and final data object
   const processData = async (body) => {
     const reader = body.getReader();
     const decoder = new TextDecoder();
@@ -124,9 +125,13 @@ export default function MainPage() {
     <div className="d-flex flex-column align-items-center">
       {loading ? <Loading pageLoaded={pageLoaded} pages={inputs.length} /> : ""}
       <div className="d-flex flex-column align-items-center">
-        <h1 className="mt-4">REI data Scrapper</h1>
+        <h2 className="mt-4 mb-0">REI data Scrapper</h2>
+        <p className="text-info mb-0">Enter city and state below</p>
+        <p className="text-info mb-0">
+          Important! Seperate each city with a new line
+        </p>
         <br />
-        <textarea placeholder="Enter City and state" />
+        <textarea placeholder={`Example: \n Tucson AZ \n Dallas TX`} />
         <button
           type="button"
           className={`btn btn-light w-50 mt-3 ${loading ? "disabled" : ""}`}
