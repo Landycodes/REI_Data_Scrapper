@@ -122,6 +122,21 @@ export default function MainPage() {
     localStorage.setItem("tables", JSON.stringify(getData));
   };
 
+  const copyAll = () => {
+    const range = document.createRange();
+    range.selectNode(document.querySelector("table"));
+
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+
+    // Copy the selected content to the clipboard
+    document.execCommand("copy");
+
+    // Clear the selection
+    window.getSelection().removeAllRanges();
+    window.alert("Table Copied!");
+  };
+
   return (
     <div className="d-flex flex-column align-items-center">
       {loading ? <Loading pageLoaded={pageLoaded} pages={inputs.length} /> : ""}
@@ -145,7 +160,9 @@ export default function MainPage() {
         </button>
         {getData.length ? (
           <div className="mt-4 mb-3 w-100 d-flex justify-content-around">
-            <button className="btn btn-secondary">Copy Table</button>
+            <button className="btn btn-secondary" onClick={() => copyAll()}>
+              Copy Table
+            </button>
             <button className="btn btn-danger" onClick={() => deleteAll()}>
               Delete Table
             </button>
@@ -181,10 +198,7 @@ export default function MainPage() {
                   >
                     <td>{data.Location}</td>
                     <td>{data.Population}</td>
-                    <td>
-                      <span className="invisible">'</span>
-                      {data.PopulationGrowth}
-                    </td>
+                    <td>"{data.PopulationGrowth}"</td>
                     <td>{data.AverageIncome}</td>
                     <td>{data.MedianHouseValue}</td>
                     <td>{data.MHV_Growth}</td>
