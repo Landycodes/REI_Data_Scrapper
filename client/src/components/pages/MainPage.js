@@ -229,7 +229,7 @@ export default function MainPage() {
       ) : (
         ""
       )}
-      <Footer />
+      {!loading ? <Footer /> : ""}
     </div>
   );
 }

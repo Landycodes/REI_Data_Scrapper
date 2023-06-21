@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Loading(props) {
   return (
-    <div className="loading w-100 h-100">
+    <div className="loading w-100 h-100" style={{ overflow: "hidden" }}>
       <div style={{ height: "10%" }}></div>
       <h1>Gathering data....</h1>
       <h3>This may take a few minutes</h3>
