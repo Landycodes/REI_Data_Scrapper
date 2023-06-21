@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../style.css";
 import { lookUp, pingServer } from "../../utils/API";
 import Loading from "../loading";
+import Footer from "../Footer";
 
 export default function MainPage() {
   const [getData, setData] = useState(
@@ -131,7 +132,10 @@ export default function MainPage() {
           Important! Seperate each city with a new line
         </p>
         <br />
-        <textarea placeholder={`Example: \n Tucson AZ \n Dallas TX`} />
+        <textarea
+          className="bg-dark text-light rounded"
+          placeholder={`Example: \n Tucson AZ \n Dallas TX`}
+        />
         <button
           type="button"
           className={`btn btn-light w-50 mt-3 ${loading ? "disabled" : ""}`}
@@ -211,6 +215,7 @@ export default function MainPage() {
       ) : (
         ""
       )}
+      <Footer />
     </div>
   );
 }
