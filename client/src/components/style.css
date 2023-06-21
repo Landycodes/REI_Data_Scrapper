@@ -2,6 +2,10 @@ html, div {
     background-color: rgb(29, 28, 28);
     color: whitesmoke;
 }
+div {
+    overflow-x: auto;
+
+}
 
 #container {
     display: flex;
@@ -22,20 +26,19 @@ html, div {
     pointer-events: none;
 }
 
-.table-responsive th {
+.table-container th {
     font-size: 13px;
     width: 100px;
 }
-.table-responsive td{
+.table-container td{
     font-size: 13px;
 }
-.table-responsive table {
+.table-container table {
     min-width: 100%;
 }
-.table-responsive {
+.table-container {
     overflow-x: auto; 
-    display: flex;
-    justify-content: center;
+    max-width: 100%;
     padding-left: 15px; 
     padding-right: 15px;
 }
@@ -43,51 +46,4 @@ html, div {
 textarea {
     width: 275px;
     height: 100px;
-}
-
-
-@media (min-width: 830px) and (max-width: 1000px){
-    .table-responsive {
-        margin-left: 20vw;
-    }
-}
-@media (min-width: 720px) and (max-width: 830px){
-    .table-responsive {
-        margin-left: 40vw;
-    }
-}
-@media (min-width: 660px) and (max-width: 720px){
-    .table-responsive {
-        margin-left: 60vw;
-    }
-}
-@media (min-width: 560px) and (max-width: 660px){
-    .table-responsive {
-        margin-left: 80vw;
-    }
-}
-@media (min-width: 506px) and (max-width: 560px){
-    .table-responsive {
-        margin-left: 100vw;
-    }
-}
-@media (min-width: 455px) and (max-width: 506px){
-    .table-responsive {
-        margin-left: 120vw;
-    }
-}
-@media (min-width: 435px) and (max-width: 455px){
-    .table-responsive {
-        margin-left: 140vw;
-    }
-}
-@media (min-width: 390px) and (max-width: 435px){
-    .table-responsive {
-        margin-left: 160vw;
-    }
-}
-@media (min-width: 0px) and (max-width: 390px){
-    .table-responsive {
-        margin-left: 200vw;
-    }
 }

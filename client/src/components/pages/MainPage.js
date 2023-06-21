@@ -19,6 +19,14 @@ export default function MainPage() {
     pingServer();
   }, []);
 
+  useEffect(() => {
+    if (loading) {
+      document.body.style.overflowY = "hidden";
+    } else if (!loading) {
+      document.body.style.overflowY = "auto";
+    }
+  }, [loading]);
+
   //save tables before refresh
   window.addEventListener("beforeunload", function () {
     localStorage.setItem("tables", JSON.stringify(getData));
@@ -45,11 +53,11 @@ export default function MainPage() {
     const processDataLine = (line) => {
       const data = JSON.parse(line);
       if (data.page) {
-        console.log(`Scanning page ${data.page}`);
+        // console.log(`Scanning page ${data.page}`);
         setPages(data.page);
       }
       if (Array.isArray(data)) {
-        console.log("It's an array!");
+        // console.log("It's an array!");
         dataArray.push(...data);
       }
     };
@@ -65,16 +73,13 @@ export default function MainPage() {
       }
 
       result += decoder.decode(value);
-
       const lines = result.split("\n");
 
       for (let i = 0; i < lines.length - 1; i++) {
         processDataLine(lines[i]);
       }
-
       result = lines[lines.length - 1];
     }
-
     return dataArray; // Return the final result
   };
 
@@ -94,11 +99,11 @@ export default function MainPage() {
 
     if (splitData.length) {
       setLoad(true);
-      console.log(splitData);
+      // console.log(splitData);
       lookUp(splitData)
         .then(processData)
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           addObj(data);
         })
         .finally(() => {
@@ -172,7 +177,7 @@ export default function MainPage() {
         )}
       </div>
       {getData.length ? (
-        <div className="table-responsive">
+        <div className="table-container">
           <table className="table table-sm table-dark table-striped table-bordered bg-dark mt-3 border-secondary">
             <thead className="thead-sm">
               <tr className="shrink p-0 m-0 text-center align-middle">
@@ -209,8 +214,10 @@ export default function MainPage() {
                   </tr>
                 ) : (
                   <tr key={index}>
-                    <td colSpan={"4"}>
-                      <b>{data.Error}</b> No results found, retype and try again
+                    <td colSpan={"6"}>
+                      <b>{data.Error}</b> No results found 😔 Check spelling,
+                      remove 'city' if applicable. Delete me, Retype and try
+                      again
                     </td>
                     <td>
                       <button

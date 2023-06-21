@@ -61,7 +61,7 @@ export default function MainPage() {
       }, 3000);
       target.style.display = "none";
     }
-    console.log(getData);
+    // console.log(getData);
   };
 
   //Sends an array of strings as a POST request to scrapper API
@@ -73,12 +73,12 @@ export default function MainPage() {
         searchArray.push(item.value);
       }
     });
-    console.log(searchArray);
+    // console.log(searchArray);
     if (searchArray.length) {
       setLoad(true);
       lookUp(searchArray)
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           addObj(data);
         })
         .finally(() => {
@@ -87,7 +87,7 @@ export default function MainPage() {
           setInput([]);
           const target = document.querySelector(".add");
           target.style.display = "block";
-          console.log(JSON.stringify(getData));
+          // console.log(JSON.stringify(getData));
         });
     }
   };
