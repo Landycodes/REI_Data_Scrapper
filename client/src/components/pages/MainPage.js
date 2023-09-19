@@ -34,6 +34,9 @@ export default function MainPage() {
 
   //adds response object to usestate hook
   const addObj = (object) => {
+    if (!object) {
+      return;
+    }
     const exists = getData.some((data) => data.Location === object.Location);
     if (!exists) {
       if (object !== undefined) {
@@ -44,6 +47,11 @@ export default function MainPage() {
 
   //takes API response and handles pages loaded and final data object
   const processData = async (body) => {
+    if (!body) {
+      console.log("failed to get data");
+      window.alert("Something has gone terribly wrong 😢");
+      return;
+    }
     const reader = body.getReader();
     const decoder = new TextDecoder();
     let result = "";

@@ -25,7 +25,7 @@ const getDataFor = async (search, callback) => {
     const page = await browser.newPage();
 
     // filtering http requests to only what is needed to collect data
-    //only requests what is needed to gather data
+    // only requests what is needed to gather data
     await page.setRequestInterception(true);
     page.on("request", (request) => {
       const requestType = request.resourceType();
@@ -74,6 +74,16 @@ const getDataFor = async (search, callback) => {
         page.waitForSelector("#txtSearch"),
       ]);
 
+      // check for and handle popup
+      const stopPopup = async () => {
+        if (await page.$("#interstitial", { display: "block" })) {
+          console.log("closing popup......");
+          await page.click("a[onclick='hideInterstitial()']");
+        }
+      };
+
+      await stopPopup();
+
       console.log("typing search.......");
       await page.type("#txtSearch", search[i]);
 
@@ -94,8 +104,12 @@ const getDataFor = async (search, callback) => {
         console.log("clicking first result......");
         await Promise.all([
           page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-          page.click("div.container > .row > .col-md-9 > p:nth-child(2) > a"),
+          stopPopup().then(() => {
+            page.click("div.container > .row > .col-md-9 > p:nth-child(2) > a");
+          }),
         ]);
+
+        console.log("first result clicked successfully");
         //grab elements on list an let user pick to run again with a fixed search
       } else if (!titleElement && !nextResult) {
         dataArray.push({
@@ -114,7 +128,7 @@ const getDataFor = async (search, callback) => {
         const population = boxData[1].innerText;
         const popGrowth = boxData[2].innerText;
         const unEmploy = boxData[4].innerText;
-        const Income = boxData[6].innerText;
+        const Income = boxData[10].innerText;
         const MHV = boxData[8].innerText;
 
         //all data collected from this page added to object
@@ -189,6 +203,7 @@ const getDataFor = async (search, callback) => {
       dataArray.push(reiData);
     }
     callback(null, dataArray);
+    // console.log(dataArray);
     return dataArray;
   } catch (err) {
     console.error("Something fucked up :/", err);

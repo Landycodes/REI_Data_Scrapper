@@ -1,6 +1,6 @@
 export const lookUp = async (inquiry) => {
   const response = await fetch(
-    "https://rei-scrape-server.onrender.com/api/scrap",
+    "https://rei-scrape-server.onrender.com/api/scrap" /*"http://localhost:3001/api/scrap"*/,
     {
       method: "POST",
       headers: {
@@ -8,12 +8,17 @@ export const lookUp = async (inquiry) => {
       },
       body: JSON.stringify({ search: inquiry }),
     }
-  );
-  if (!response.body) {
-    throw new Error("Response body is not available");
-  }
+  ).catch((err) => {
+    console.error(err);
+  });
 
-  return response.body;
+  if (response) {
+    if (!response.body) {
+      throw new Error("Response body is not available");
+    }
+
+    return response.body;
+  }
 };
 
 export const pingServer = () => {
